@@ -1,0 +1,96 @@
+# Zinx Server Docker Compose 部署配置
+# 用法：docker-compose up -d
+
+version: '3.8'
+
+services:
+  # Zinx TCP 服务器
+  zinx-server:
+    build:
+      context: ../../examples/server
+      dockerfile: Dockerfile
+    container_name: zinx-server
+    ports:
+      - "8999:8999"  # TCP 端口
+      - "9000:9000"  # WebSocket 端口
+    volumes:
+      - ./logs:/app/log
+      - ./conf/zinx.json:/app/conf/zinx.json:ro
+    environment:
+      - GIN_MODE=release
+      - TZ=Asia/Shanghai
+    restart: unless-stopped
+    networks:
+      - zinx-network
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "8999"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 512M
+        reservations:
+          cpus: '0.5'
+          memory: 128M
+
+  # Zinx WebSocket 服务器
+  zinx-ws:
+    build:
+      context: ../../examples/websocket
+      dockerfile: Dockerfile
+    container_name: zinx-ws-server
+    ports:
+      - "9000:9000"  # WebSocket 端口
+    volumes:
+      - ./logs:/app/log
+    environment:
+      - TZ=Asia/Shanghai
+    restart: unless-stopped
+    networks:
+      - zinx-network
+    depends_on:
+      - zinx-server
+
+  # 监控和日志
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: zinx-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+    restart: unless-stopped
+    networks:
+      - zinx-network
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: zinx-grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin123
+      - GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource
+    restart: unless-stopped
+    networks:
+      - zinx-network
+    depends_on:
+      - prometheus
+
+networks:
+  zinx-network:
+    driver: bridge
+
+volumes:
+  prometheus-data:
+  grafana-data:

@@ -1,0 +1,32 @@
+# Prometheus 监控配置
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+# 告警规则
+# alerting:
+#   alertmanagers:
+#     - static_configs:
+#         - targets: []
+
+# 规则文件
+# rule_files:
+#   - "first_rules.yml"
+
+# 抓取配置
+scrape_configs:
+  # Prometheus 自监控
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # Zinx Server 监控 (需要应用暴露 metrics 端点)
+  - job_name: 'zinx-server'
+    static_configs:
+      - targets: ['zinx-server:8999']
+    metrics_path: /metrics
+
+  # 节点监控
+  - job_name: 'node'
+    static_configs:
+      - targets: ['host.docker.internal:9100']
