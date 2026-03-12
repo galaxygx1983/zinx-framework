@@ -1,6 +1,27 @@
 ---
 name: zinx-framework
-description: Golang 轻量级并发服务器框架 Zinx 开发指南。用于构建 TCP 服务器、游戏服务器、长连接服务。TRIGGER 当用户需要：(1) 开发 Golang TCP 服务器 (2) 实现游戏服务器框架 (3) 处理长连接业务 (4) 学习 Zinx 框架使用。
+description: Zinx轻量级并发服务器框架开发指南(zinx-framework)。当用户需要使用Go语言开发TCP服务器、构建游戏服务器框架(Go游戏开发/MMO服务器/实时对战)、实现长连接服务(即时通讯/WebSocket/KCP)、学习Zinx框架使用方法、配置Worker池并发模型、实现消息路由和封包拆包、处理心跳检测和连接管理、使用Protobuf协议通信、配置WebSocket服务、实现AOI兴趣区域算法、搭建高并发网络服务、解决粘包拆包问题、配置路由组和中间件、使用连接属性管理、实现自定义数据封包器等相关任务时立即使用。支持Zinx v1.2.7，提供TCP/WebSocket/KCP多协议支持，适用于游戏服务器、即时通讯、物联网IoT等长连接场景。
+trigger:
+  - Zinx
+  - TCP服务器
+  - Go游戏服务器
+  - 游戏开发
+  - 长连接
+  - WebSocket
+  - KCP协议
+  - Worker池
+  - 消息路由
+  - 封包拆包
+  - 心跳检测
+  - 连接管理
+  - AOI算法
+  - Protobuf
+  - 游戏框架
+  - 即时通讯
+  - 并发服务器
+  - 网络编程
+  - Go网络
+  - MMO服务器
 ---
 
 # Zinx Framework
